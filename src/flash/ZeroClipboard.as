@@ -2,6 +2,9 @@ package {
 
   import flash.display.Stage;
   import flash.display.Sprite;
+  import flash.desktop.Clipboard;
+  import flash.desktop.ClipboardFormats;
+  import flash.desktop.ClipboardTransferMode;
   import flash.display.LoaderInfo;
   import flash.events.*;
   import flash.external.ExternalInterface;
@@ -72,9 +75,11 @@ package {
     // returns nothing
     private function mouseClick(event:MouseEvent): void {
 
-      // Linux currently doesn't use the correct clipboard buffer with the new
-      // Flash 10 API, so we need to use this until we can figure out an alternative
-      flash.system.System.setClipboard(clipText);
+      // user click copies text to clipboard
+      // as of flash player 10, this MUST happen from an in-movie flash click event
+      Clipboard.generalClipboard.clear();
+      Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, clipText);
+      Clipboard.generalClipboard.setData(ClipboardFormats.HTML_FORMAT, clipText);
 
       // signal to the page it is done
       ExternalInterface.call( 'ZeroClipboard.dispatch', 'complete',  metaData(event, {
